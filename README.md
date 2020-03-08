@@ -1,2 +1,2 @@
 # simplejson
-A clone of Python's simplejson library using my own lexing and parsing tools
+A clone of Python's simplejson package built to demonstrate and develop the language tools I've created [here](https://github.com/NuriAmari/Language-Tools)
