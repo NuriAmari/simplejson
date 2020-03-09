@@ -20,7 +20,7 @@ class ParserConfig:
     ANOTHER_MEMBER = NonTerminal(name="ANOTHER_MEMBER")
     ELEMENTS = NonTerminal(name="ELEMENTS")
 
-    # # TERMINALS
+    # TERMINALS
 
     true = Terminal(name="TRUE")
     false = Terminal(name="FALSE")
@@ -34,33 +34,29 @@ class ParserConfig:
     right_curly = Terminal(name="RIGHT_CURLY")
     right_square = Terminal(name="RIGHT_SQUARE")
 
-    # # PRODUCTION RULES
+    # PRODUCTION RULES
 
     PRODUCTION_RULES = [
-        ProductionRule(JSON, [VALUE], name="SKIP"),
-        ProductionRule(VALUE, [OBJECT], name="SKIP"),
-        ProductionRule(VALUE, [ARRAY], name="SKIP"),
-        ProductionRule(VALUE, [string], name="SKIP"),
-        ProductionRule(VALUE, [number], name="SKIP"),
-        ProductionRule(VALUE, [true], name="SKIP"),
-        ProductionRule(VALUE, [false], name="SKIP"),
-        ProductionRule(VALUE, [null], name="SKIP"),
-        ProductionRule(
-            OBJECT, [left_curly, MEMBERS, right_curly], name="OBJECT_CREATE"
-        ),
-        ProductionRule(MEMBERS, [Epsilon()], name="SKIP"),
-        ProductionRule(MEMBERS, [MEMBER, ANOTHER_MEMBER], name="SKIP"),
-        ProductionRule(ANOTHER_MEMBER, [comma, MEMBER, ANOTHER_MEMBER], name="SKIP"),
-        ProductionRule(ANOTHER_MEMBER, [Epsilon()], name="SKIP"),
-        ProductionRule(MEMBER, [string, colon, ELEMENT], name="ADD_FIELD"),
-        ProductionRule(
-            ARRAY, [left_square, ELEMENTS, right_square], name="ARRAY_CREATE"
-        ),
-        ProductionRule(ELEMENTS, [Epsilon()], name="SKIP"),
-        ProductionRule(ELEMENTS, [ELEMENT, ANOTHER_ELEMENT], name="SKIP"),
-        ProductionRule(ELEMENT, [VALUE], name="SKIP"),
-        ProductionRule(ANOTHER_ELEMENT, [comma, ELEMENT, ANOTHER_ELEMENT], name="SKIP"),
-        ProductionRule(ANOTHER_ELEMENT, [Epsilon()], name="SKIP"),
+        ProductionRule(JSON, [VALUE]),
+        ProductionRule(VALUE, [OBJECT]),
+        ProductionRule(VALUE, [ARRAY]),
+        ProductionRule(VALUE, [string]),
+        ProductionRule(VALUE, [number]),
+        ProductionRule(VALUE, [true]),
+        ProductionRule(VALUE, [false]),
+        ProductionRule(VALUE, [null]),
+        ProductionRule(OBJECT, [left_curly, MEMBERS, right_curly]),
+        ProductionRule(MEMBERS, [Epsilon()]),
+        ProductionRule(MEMBERS, [MEMBER, ANOTHER_MEMBER]),
+        ProductionRule(ANOTHER_MEMBER, [comma, MEMBER, ANOTHER_MEMBER]),
+        ProductionRule(ANOTHER_MEMBER, [Epsilon()]),
+        ProductionRule(MEMBER, [string, colon, ELEMENT]),
+        ProductionRule(ARRAY, [left_square, ELEMENTS, right_square]),
+        ProductionRule(ELEMENTS, [Epsilon()]),
+        ProductionRule(ELEMENTS, [ELEMENT, ANOTHER_ELEMENT]),
+        ProductionRule(ELEMENT, [VALUE]),
+        ProductionRule(ANOTHER_ELEMENT, [comma, ELEMENT, ANOTHER_ELEMENT]),
+        ProductionRule(ANOTHER_ELEMENT, [Epsilon()]),
     ]
 
     JSON_GRAMMAR = CFG(
