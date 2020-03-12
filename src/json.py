@@ -1,54 +1,66 @@
 import json as simplejson
+import io
 
 from typing import TextIO
 
 from languagetools.ast.ast import ASTNode
+from languagetools.lexer.lexer import tokenize
+from .language_tools_config.parser_config import ParserConfig
+from .language_tools_config.lexer_config import LexerConfig
 
 
 class json:
     @staticmethod
     def loads(input_str: str) -> object:
-        pass
+        tokens = tokenize(io.StringIO(input_str), LexerConfig.TOKENIZER)
+        tree = ParserConfig.JSON_GRAMMAR.LL1_parse(tokens)
+        tree.flatten({"ELEMENTS": "ANOTHER_ELEMENT", "MEMBERS": "ANOTHER_MEMBER"})
+        return json.ast_to_object(tree)
 
     @staticmethod
-    def load(input_str: str) -> object:
-        pass
+    def load(input_stream: str) -> object:
+        tokens = tokenize(input_stream, LexerConfig.TOKENIZER)
+        tree = ParserConfig.JSON_GRAMMAR.LL1_parse(tokens)
+        tree.flatten({"ELEMENTS": "ANOTHER_ELEMENT", "MEMBERS": "ANOTHER_MEMBER"})
+        return json.ast_to_object(tree)
 
     @staticmethod
     def dumps(json_object: object) -> str:
-        pass
+        return simplejson.dumps(json_object)
 
     @staticmethod
     def dump(json_object: object, stream: TextIO) -> None:
-        pass
+        simplejson.dump(json_object, stream)
 
     @staticmethod
     def ast_to_object(ast: ASTNode) -> object:
+        retval = None
+
         if ast.name == "VALUE":
-            return json.ast_to_object(ast.children[0])
+            retval = json.ast_to_object(ast.children[0])
         elif ast.name == "STRING":
             if ast.lexme is None:
                 raise Exception("Terminals should always have a non null lexme")
-            return ast.lexme[1 : len(ast.lexme) - 1]
+            retval = ast.lexme[1 : len(ast.lexme) - 1]
         elif ast.name == "TRUE":
-            return True
+            retval = True
         elif ast.name == "FALSE":
-            return False
+            retval = False
         elif ast.name == "NULL":
-            return None
+            retval = None
         elif ast.name == "NUMBER":
             # TODO Handle decoding hex, exponents, floats
             if ast.lexme is None:
                 raise Exception("Terminals should always have a non null lexme")
-            return simplejson.loads(ast.lexme)
+            retval = simplejson.loads(ast.lexme)
         elif ast.name == "ARRAY":
             result = []
             for child in ast.children[1].children:
                 if child.name == "ELEMENT":
                     result.append(json.ast_to_object(child))
-            return result
+            retval = result
         elif ast.name == "ELEMENT":
-            return json.ast_to_object(ast.children[0])
+            retval = json.ast_to_object(ast.children[0])
         elif ast.name == "OBJECT":
             result = {}
             for child in ast.children[1].children:
@@ -56,8 +68,12 @@ class json:
                     result[
                         child.children[0].lexme[1 : len(child.children[0].lexme) - 1]
                     ] = json.ast_to_object(child.children[2])
-            return result
+            retval = result
         elif ast.name == "S-Prime":
-            return json.ast_to_object(ast.children[1])
+            retval = json.ast_to_object(ast.children[1])
         elif ast.name == "JSON":
-            return json.ast_to_object(ast.children[0])
+            retval = json.ast_to_object(ast.children[0])
+        else:
+            raise Exception(f"Failed to convert ast node with name {ast.name}")
+
+        return result
