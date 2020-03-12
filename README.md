@@ -1,2 +1,2 @@
 # simplejson
-A clone of Python's simplejson package built to demonstrate and develop the language tools I've created [here](https://github.com/NuriAmari/Language-Tools)
+A clone of Python's simplejson package built to demonstrate and develop the language tools I've created [here](https://github.com/NuriAmari/Language-Tools). Note this depends upon simplejson to dump a json object once parsed and created as I'm uninterested in that task. However, the lexing and parsing of the JSON file is done exclusively by the aformentioned language tools. Currently, all ASCII based valid JSON files are supported.
