@@ -1,13 +1,11 @@
 from languagetools.lexer.basic_symbols import (
     DIGITS,
     NON_ZERO_DIGITS,
-    ALPHABET,
-    UPPERCASE_ALPHABET,
     ASCII,
 )
 from languagetools.lexer.nfa import Atom, Concat, Epsilon, KleeneStar, Union
 from languagetools.lexer.dfa import DFA
-from languagetools.lexer.token import Token
+from src.language_tools_config.tokens import *
 
 
 class LexerConfig:
@@ -16,17 +14,17 @@ class LexerConfig:
 
     _period = Atom(".")
     COMMA = Atom(",")
-    COMMA.end_state.tokens.add(Token(name="COMMA"))
+    COMMA.add_token(CommaToken)
     COLON = Atom(":")
-    COLON.end_state.tokens.add(Token(name="COLON"))
+    COLON.add_token(ColonToken)
     LEFT_CURLY = Atom("{")
-    LEFT_CURLY.end_state.tokens.add(Token(name="LEFT_CURLY"))
+    LEFT_CURLY.add_token(LeftCurlyToken)
     RIGHT_CURLY = Atom("}")
-    RIGHT_CURLY.end_state.tokens.add(Token(name="RIGHT_CURLY"))
+    RIGHT_CURLY.add_token(RightCurlyToken)
     LEFT_SQUARE = Atom("[")
-    LEFT_SQUARE.end_state.tokens.add(Token(name="LEFT_SQUARE"))
+    LEFT_SQUARE.add_token(LeftSquareToken)
     RIGHT_SQUARE = Atom("]")
-    RIGHT_SQUARE.end_state.tokens.add(Token(name="RIGHT_SQUARE"))
+    RIGHT_SQUARE.add_token(RightSquareToken)
 
     # Numbers
 
@@ -46,7 +44,7 @@ class LexerConfig:
     )
 
     NUMBER = Concat(_integer, _fraction, _exponent)
-    NUMBER.end_state.tokens.add(Token(name="NUMBER"))
+    NUMBER.add_token(NumberToken)
 
     _hex_digit = Union(
         Atom("A"),
@@ -73,19 +71,19 @@ class LexerConfig:
         ),
         Atom('"'),
     )
-    STRING.end_state.tokens.add(Token(name="STRING"))
+    STRING.add_token(StringToken)
 
     # Booleans
 
     TRUE = Concat(Atom("t"), Atom("r"), Atom("u"), Atom("e"))
-    TRUE.end_state.tokens.add(Token(name="TRUE"))
+    TRUE.add_token(TrueToken)
     FALSE = Concat(Atom("f"), Atom("a"), Atom("l"), Atom("s"), Atom("e"))
-    FALSE.end_state.tokens.add(Token(name="FALSE"))
+    FALSE.add_token(FalseToken)
 
     # Miscelaneous
 
     NULL = Concat(Atom("n"), Atom("u"), Atom("l"), Atom("l"))
-    NULL.end_state.tokens.add(Token(name="NULL"))
+    NULL.add_token(NullToken)
 
     TOKENIZER = DFA(
         Union(
