@@ -1,4 +1,4 @@
-from languagetools.lexer.token import Token
+from langtools.lexer.token import Token
 
 CommaToken = Token(name="COMMA")
 ColonToken = Token(name="COLON")

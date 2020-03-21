@@ -1,7 +1,8 @@
 import unittest
 
-from json.json import LexerConfig, ParserConfig
-from lexer.dfa import DFA
+from src.language_tools_config.lexer_config import LexerConfig
+from src.language_tools_config.parser_config import ParserConfig
+from langtools.lexer.dfa import DFA
 
 
 class NumberTests(unittest.TestCase):

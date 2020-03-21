@@ -1,5 +1,5 @@
-from languagetools.parser.cfg import CFG, Terminal, NonTerminal, ProductionRule
-from languagetools.parser.cfg import Epsilon
+from langtools.parser.cfg import CFG, Terminal, NonTerminal, ProductionRule
+from langtools.parser.cfg import Epsilon
 
 
 class ParserConfig:

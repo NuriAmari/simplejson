@@ -1,11 +1,23 @@
-from languagetools.lexer.basic_symbols import (
+from langtools.lexer.basic_symbols import (
     DIGITS,
     NON_ZERO_DIGITS,
     ASCII,
 )
-from languagetools.lexer.nfa import Atom, Concat, Epsilon, KleeneStar, Union
-from languagetools.lexer.dfa import DFA
-from src.language_tools_config.tokens import *
+from langtools.lexer.nfa import Atom, Concat, Epsilon, KleeneStar, Union
+from langtools.lexer.dfa import DFA
+from src.language_tools_config.tokens import (
+    CommaToken,
+    ColonToken,
+    LeftCurlyToken,
+    RightCurlyToken,
+    LeftSquareToken,
+    RightSquareToken,
+    NumberToken,
+    StringToken,
+    TrueToken,
+    FalseToken,
+    NullToken,
+)
 
 
 class LexerConfig:
