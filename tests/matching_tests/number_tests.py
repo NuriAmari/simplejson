@@ -123,6 +123,13 @@ class NumberTests(unittest.TestCase):
         self.assertTrue(self.number.match("5e+034"))
         self.assertTrue(self.number.match("5.0234e34"))
         self.assertTrue(self.number.match("5.0234e-34"))
+        self.assertTrue(self.number.match("5E34"))
+        self.assertTrue(self.number.match("5E023"))
+        self.assertTrue(self.number.match("5E-34"))
+        self.assertTrue(self.number.match("5E-034"))
+        self.assertTrue(self.number.match("5E+034"))
+        self.assertTrue(self.number.match("5.0234E34"))
+        self.assertTrue(self.number.match("5.0234E-34"))
 
     def test__match__Mismatch__UnsuccesfulMatch(self):
 
