@@ -3,10 +3,10 @@ import io
 
 from typing import TextIO
 
-from languagetools.ast.ast import ASTNode
-from languagetools.lexer.lexer import tokenize
-from .language_tools_config.parser_config import ParserConfig
-from .language_tools_config.lexer_config import LexerConfig
+from langtools.ast.ast import ASTNode
+from langtools.lexer.lexer import tokenize
+from src.language_tools_config.parser_config import ParserConfig
+from src.language_tools_config.lexer_config import LexerConfig
 
 
 class json:
