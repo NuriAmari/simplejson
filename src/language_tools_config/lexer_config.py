@@ -3,20 +3,20 @@ from langtools.lexer.basic_symbols import (
     NON_ZERO_DIGITS,
     ASCII,
 )
-from langtools.lexer.nfa import Atom, Concat, Epsilon, KleeneStar, Union
 from langtools.lexer.dfa import DFA
+from langtools.lexer.nfa import Atom, Concat, Epsilon, KleeneStar, Union
 from src.language_tools_config.tokens import (
-    CommaToken,
     ColonToken,
+    CommaToken,
+    FalseToken,
     LeftCurlyToken,
-    RightCurlyToken,
     LeftSquareToken,
-    RightSquareToken,
+    NullToken,
     NumberToken,
+    RightCurlyToken,
+    RightSquareToken,
     StringToken,
     TrueToken,
-    FalseToken,
-    NullToken,
 )
 
 
@@ -58,6 +58,8 @@ class LexerConfig:
     NUMBER = Concat(_integer, _fraction, _exponent)
     NUMBER.add_token(NumberToken)
 
+    # Strings
+
     _hex_digit = Union(
         Atom("A"),
         Atom("B"),
@@ -74,12 +76,45 @@ class LexerConfig:
         Union(*NON_ZERO_DIGITS),
     )
 
-    # Strings
+    _hex_number = Concat(
+        Atom("u"),
+        _hex_digit,
+        _hex_digit,
+        _hex_digit,
+        _hex_digit,
+        _hex_digit,
+        _hex_digit,
+    )
+
+    _escaped_char = Concat(
+        Atom("\\"),
+        Union(
+            Atom("/"),
+            Atom("\\"),
+            Atom("b"),
+            Atom("f"),
+            Atom("n"),
+            Atom("r"),
+            Atom("t"),
+            Atom('"'),
+            _hex_number,
+        ),
+    )
+
     STRING = Concat(
         Atom('"'),
         Union(
             Epsilon(),
-            KleeneStar(Union(*[value for key, value in ASCII.items() if key != '"'])),
+            KleeneStar(
+                Union(
+                    *[
+                        value
+                        for key, value in ASCII.items()
+                        if key != '"' and key != "\\"
+                    ],
+                    _escaped_char
+                )
+            ),
         ),
         Atom('"'),
     )
@@ -99,17 +134,17 @@ class LexerConfig:
 
     TOKENIZER = DFA(
         Union(
-            NUMBER,
-            STRING,
-            COMMA,
             COLON,
-            LEFT_CURLY,
-            RIGHT_CURLY,
-            LEFT_SQUARE,
-            RIGHT_SQUARE,
-            TRUE,
+            COMMA,
             FALSE,
+            LEFT_CURLY,
+            LEFT_SQUARE,
             NULL,
+            NUMBER,
+            RIGHT_CURLY,
+            RIGHT_SQUARE,
+            STRING,
+            TRUE,
             close=False,
         )
     )
