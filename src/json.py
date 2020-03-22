@@ -1,12 +1,26 @@
 import json as simplejson
 import io
+import re
 
-from typing import TextIO
+from typing import TextIO, Union
 
 from langtools.ast.ast import ASTNode
 from langtools.lexer.lexer import tokenize
 from src.language_tools_config.parser_config import ParserConfig
 from src.language_tools_config.lexer_config import LexerConfig
+
+
+def parse_number(number_str: str) -> Union[int, float]:
+    # maybe using re is slightly cheating, but I'm ok with it
+    groups = re.split(r"\.|E|e", number_str)
+    integer_component = int(groups[0])
+    decimal_component = float(f"0.{groups[1]}") if len(groups) > 1 else 0
+    exponent_component = int(groups[2]) if len(groups) > 2 else 0
+
+    if integer_component < 0:
+        decimal_component *= -1
+
+    return (integer_component + decimal_component) * 10 ** exponent_component
 
 
 class json:
@@ -49,10 +63,9 @@ class json:
         elif ast.name == "NULL":
             retval = None
         elif ast.name == "NUMBER":
-            # TODO Handle decoding hex, exponents, floats
             if ast.lexme is None:
                 raise Exception("Terminals should always have a non null lexme")
-            retval = simplejson.loads(ast.lexme)
+            retval = parse_number(ast.lexme)
         elif ast.name == "ARRAY":
             result = []
             for child in ast.children[1].children:
@@ -76,4 +89,4 @@ class json:
         else:
             raise Exception(f"Failed to convert ast node with name {ast.name}")
 
-        return result
+        return retval
