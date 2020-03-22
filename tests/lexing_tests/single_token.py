@@ -1,42 +1,25 @@
 import unittest
-from typing import List
 
-from langtools.lexer.lexer import tokenize_str
 from langtools.lexer.token import Token
 from langtools.lexer.exceptions import LexicalError
 
-from src.language_tools_config.lexer_config import LexerConfig
+from tests.lexing_tests.utils import compare_token_list, get_tokens
 
 
-def compare_token_list(list1: List[Token], list2: List[Token]) -> bool:
-
-    if len(list1) != len(list2):
-        print("No Match:", list1, list2)
-        return False
-
-    for token1, token2 in zip(list1, list2):
-        if token1.lexme != token2.lexme:
-            print("No Match:", list1, list2)
-            return False
-
-    return True
-
-
-def get_tokens(input_str: str):
-    return tokenize_str(input_str, LexerConfig.TOKENIZER)
-
-
-class SingleToken(unittest.TestCase):
-    def test__tokenize__Numbers__Success(self):
+class NumberTests(unittest.TestCase):
+    def test__tokenize__SingleDigit__Success(self):
         self.assertTrue(
             compare_token_list(get_tokens("1"), [Token(name="NUMBER", lexme="1")])
         )
 
+    def test__tokenize__MultiDigit__Success(self):
         self.assertTrue(
             compare_token_list(
                 get_tokens("12345"), [Token(name="NUMBER", lexme="12345")]
             )
         )
+
+    def test__tokenize__FancyNumbers__Success(self):
 
         self.assertTrue(
             compare_token_list(
@@ -51,14 +34,51 @@ class SingleToken(unittest.TestCase):
             )
         )
 
+    def test__tokenize_Zero__Success(self):
+
         self.assertTrue(
             compare_token_list(get_tokens("0"), [Token(name="NUMBER", lexme="0")])
         )
 
-    def test__tokenize_Numbers__Failure(self):
-        with self.assertRaises(LexicalError) as context:
-            get_tokens("01")
+    def test__tokenize_ZeroNonZero__TwoSeperateTokens(self):
+        self.assertTrue(
+            compare_token_list(
+                get_tokens("01"),
+                [Token(name="NUMBER", lexme="0"), Token(name="NUMBER", lexme="1")],
+            )
+        )
 
-        self.assertEqual("1", context.exception.error_char)
+    def test__tokenize_SecondDecimalPoint__Failure(self):
+
+        with self.assertRaises(LexicalError) as context:
+            tokens = get_tokens("1.5.5")
+            print(tokens)
+
+        self.assertEqual(".", context.exception.error_char)
         self.assertEqual(0, context.exception.error_line)
+        self.assertEqual(3, context.exception.error_col)
+
+    def test__tokenize_SecondExponent__Failure(self):
+
+        with self.assertRaises(LexicalError) as context:
+            tokens = get_tokens("1.5e\n5e6")
+            print(tokens)
+
+        self.assertEqual("e", context.exception.error_char)
+        self.assertEqual(1, context.exception.error_line)
         self.assertEqual(1, context.exception.error_col)
+
+
+class StringTests(unittest.TestCase):
+    def test__tokenize__SingleString__Success(self):
+        self.assertTrue(
+            compare_token_list(get_tokens('""'), [Token(name="STRING", lexme='""')])
+        )
+
+    def test__tokenize__FancyString__Success(self):
+        self.assertTrue(
+            compare_token_list(
+                get_tokens('"\\"\\nabc123#$%$#"'),
+                [Token(name="STRING", lexme='"\\"\\nabc123#$%$#"')],
+            )
+        )
