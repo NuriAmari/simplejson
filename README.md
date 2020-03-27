@@ -1,5 +1,5 @@
 # simplejson
-A clone of Python's simplejson package built to demonstrate and develop the language tools I've created [here](https://github.com/NuriAmari/Language-Tools). 
+A clone of Python's [simplejson](https://pypi.org/project/simplejson/) package built to demonstrate and develop the language tools I've created [here](https://github.com/NuriAmari/Language-Tools). For those unfamiliar with simplejson, it is a python utility, now included with the language, used to encode and decode JSON data.
 
 Currently the tool depends upon simplejson to dump objects once parsed and created, as I'm less interested in that task and it is unrelated to the language tools. However, I will likely remove all depedencies upon simplejson eventually. 
 
