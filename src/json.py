@@ -11,11 +11,15 @@ from src.language_tools_config.lexer_config import LexerConfig
 
 
 def parse_number(number_str: str) -> Union[int, float]:
+
     # maybe using re is slightly cheating, but I'm ok with it
-    groups = re.split(r"\.|E|e", number_str)
+    groups = re.match(
+        r"([+-]?[0-9]+)(\.[0-9]+)?([eE][+-]?[0-9]+)?", number_str
+    ).groups()
+
     integer_component = int(groups[0])
-    decimal_component = float(f"0.{groups[1]}") if len(groups) > 1 else 0
-    exponent_component = int(groups[2]) if len(groups) > 2 else 0
+    decimal_component = float(f"0.{groups[1][1:]}") if groups[1] else 0
+    exponent_component = int(groups[2][1:]) if groups[2] else 0
 
     if integer_component < 0:
         decimal_component *= -1
