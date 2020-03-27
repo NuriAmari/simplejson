@@ -29,6 +29,8 @@ Stringifies a JSON serializable object and writes the result to the provided str
 
 Functions identically to dump, but returns the string directly rather than writing to a stream. Also depends on simplejson.
 
+`json.dumps(json_object: Object)`
+
 ## Limitations
 
 - Only ASCII characters are supported
